@@ -1,0 +1,25 @@
+@startuml
+title Диаграмма состояний: Банкомат
+
+state "Ожидание" as Idle
+state "Аутентификация пользователя" as Auth
+state "Выполнение операций" as Ops
+state "Заблокирован (денег нет)" as Blocked
+
+[*] --> Idle : [cash > 0]
+[*] --> Blocked : [cash = 0]
+
+Idle --> Auth : enterPin(pin)
+Idle --> Idle : loadMoney(amount)
+
+Auth --> Ops : enterPin [PIN верный]
+Auth --> Auth : enterPin [PIN неверный,\nпопыток < 3]
+Auth --> Idle : enterPin [3 неверных попытки\nили нет связи с банком]
+Auth --> Idle : finish()
+
+Ops --> Ops : withdraw(amount) [cash > 0 после выдачи]
+Ops --> Blocked : withdraw(amount) [cash = 0 после выдачи]
+Ops --> Idle : finish()
+
+Blocked --> Idle : loadMoney(amount) [amount > 0]
+@enduml

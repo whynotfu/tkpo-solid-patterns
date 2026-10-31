@@ -1,0 +1,59 @@
+@startuml
+title Паттерн Состояние: Банкомат
+
+class Client <<5_Practice.cpp>>
+
+class ATM {
+  - id : string
+  - cash : int
+  - noConnectionChance : double
+  - account : Account*
+  - attempts : int
+  - state : IAtmState*
+  + enterPin(pin : int) : string
+  + withdraw(amount : int) : string
+  + finish() : string
+  + loadMoney(amount : int) : string
+  + setState(state : IAtmState*)
+  + isBankAvailable() : bool
+  + endSession()
+  + getStateName() : string
+}
+
+interface IAtmState {
+  + getName() : string
+  + enterPin(atm : ATM, pin : int) : string
+  + withdraw(atm : ATM, amount : int) : string
+  + finish(atm : ATM) : string
+  + loadMoney(atm : ATM, amount : int) : string
+}
+
+class IdleState
+class AuthenticationState
+class OperationState
+class BlockedState
+
+class Bank {
+  + addAccount(pin, owner, balance)
+  + findAccount(pin) : Account*
+}
+
+class Account <<struct>> {
+  + owner : string
+  + balance : int
+}
+
+Client ..> ATM
+ATM o-- IAtmState : текущее состояние
+ATM *-- IdleState
+ATM *-- AuthenticationState
+ATM *-- OperationState
+ATM *-- BlockedState
+IAtmState <|.. IdleState
+IAtmState <|.. AuthenticationState
+IAtmState <|.. OperationState
+IAtmState <|.. BlockedState
+ATM o-- Bank
+Bank *-- "0..*" Account
+ATM --> Account : текущий клиент
+@enduml

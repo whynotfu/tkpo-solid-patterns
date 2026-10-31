@@ -1,0 +1,41 @@
+@startuml
+title Снятие денег в банкомате
+
+actor Клиент
+participant "ATM" as A
+participant "IdleState" as I
+participant "AuthenticationState" as Au
+participant "OperationState" as O
+participant "Bank" as B
+
+Клиент -> A : enterPin(1234)
+A -> I : enterPin(atm, 1234)
+I -> A : setState(authentication)
+I -> A : enterPin(1234)
+A -> Au : enterPin(atm, 1234)
+Au -> A : isBankAvailable()
+A --> Au : true
+Au -> B : findAccount(1234)
+B --> Au : account
+Au -> A : setAccount(account)
+Au -> A : setState(operation)
+A --> Клиент : "PIN-код верный"
+
+Клиент -> A : withdraw(3000)
+A -> O : withdraw(atm, 3000)
+O -> A : isBankAvailable()
+A --> O : true
+O -> A : takeCash(3000)
+O -> O : balance -= 3000
+alt денег в банкомате не осталось
+  O -> A : endSession()
+  note right : переход в Заблокирован
+end
+A --> Клиент : "Выдано 3000 руб."
+
+Клиент -> A : finish()
+A -> O : finish(atm)
+O -> A : endSession()
+note right : переход в Ожидание
+A --> Клиент : "Заберите карту"
+@enduml
