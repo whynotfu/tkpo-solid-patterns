@@ -1,0 +1,77 @@
+@startuml
+title MVC: Банкомат
+
+abstract class Observer {
+  + {abstract} update()
+}
+
+class Observable {
+  - observers : vector<Observer*>
+  + addObserver(o : Observer*)
+  + removeObserver(o : Observer*)
+  + notifyUpdate()
+}
+
+package "Model" {
+  class AtmModel {
+    - lastMessage : string
+    - history : vector<string>
+    + addAccount(pin, owner, balance)
+    + enterPin(pin : int)
+    + withdraw(amount : int)
+    + finish()
+    + loadMoney(amount : int)
+    + getCash() : int
+    + getStateName() : string
+    + getLastMessage() : string
+    + getClientName() : string
+    + getClientBalance() : int
+    + getHistory() : vector<string>
+    - apply(operation, result)
+  }
+  class ATM <<5_AtmState.h>> {
+    + enterPin(pin) : string
+    + withdraw(amount) : string
+    + finish() : string
+    + loadMoney(amount) : string
+  }
+  class Bank <<5_AtmState.h>>
+  interface IAtmState <<5_AtmState.h>>
+}
+
+package "View" {
+  class ScreenView {
+    - model : AtmModel&
+    - out : ostream&
+    + update()
+    + print()
+  }
+  class OperatorView {
+    - model : AtmModel&
+    - out : ostream&
+    + update()
+    + print()
+  }
+}
+
+package "Controller" {
+  class AtmController {
+    - model : AtmModel&
+    + execute(command : string) : bool
+    + run(in : istream, out : ostream)
+  }
+}
+
+Observable <|-- AtmModel
+Observer <|-- ScreenView
+Observer <|-- OperatorView
+Observable o-- "0..*" Observer : оповещает
+
+AtmModel *-- ATM
+AtmModel *-- Bank
+ATM o-- IAtmState
+
+ScreenView --> AtmModel : читает данные
+OperatorView --> AtmModel : читает данные
+AtmController --> AtmModel : изменяет
+@enduml

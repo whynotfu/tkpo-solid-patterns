@@ -1,0 +1,26 @@
+@startuml
+title MVC: команда "take 3000"
+
+actor Пользователь
+participant "AtmController" as C
+participant "AtmModel" as M
+participant "ATM" as A
+participant "ScreenView" as S
+participant "OperatorView" as O
+
+Пользователь -> C : execute("take 3000")
+C -> C : разобрать команду
+C -> M : withdraw(3000)
+M -> A : withdraw(3000)
+A --> M : "Выдано 3000 руб. ..."
+M -> M : lastMessage, history
+M -> M : notifyUpdate()
+M -> S : update()
+S -> M : getLastMessage()
+S -> M : getClientName(), getClientBalance()
+S --> Пользователь : экран банкомата
+M -> O : update()
+O -> M : getStateName(), getCash()
+O --> Пользователь : панель оператора
+C --> Пользователь : true
+@enduml
