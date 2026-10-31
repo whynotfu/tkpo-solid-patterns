@@ -1,0 +1,94 @@
+@startuml
+title Декоратор: Журнал учителя
+
+abstract class LessonComponent {
+  + {abstract} clone() : LessonComponent*
+  + {abstract} getType() : string
+  + {abstract} getFields() : vector<pair<string,string>>
+  + {abstract} input(in, out)
+  + print(out)
+  + getField(name) : string
+}
+
+class Lesson {
+  # date : string
+  # topic : string
+  # className : string
+  + Lesson()
+  + Lesson(date, topic, className)
+  + Lesson(other : Lesson)
+  + ~Lesson()
+}
+
+class Credit {
+  - passedCount : int
+}
+
+class Exam {
+  - form : string
+  - averageGrade : double
+}
+
+abstract class LessonDecorator {
+  # wrapped : LessonComponent*
+  + LessonDecorator(wrapped)
+  + LessonDecorator(other : LessonDecorator)
+  + ~LessonDecorator()
+  + getType() : string
+  + getFields() : vector<pair<string,string>>
+  + input(in, out)
+}
+
+class HomeworkDecorator {
+  - homework : string
+  + getFields()
+}
+
+class RetakeDecorator {
+  - retakeDate : string
+  - studentsCount : int
+  + getType()
+  + getFields()
+}
+
+class OnlineDecorator {
+  - link : string
+  + getType()
+  + getFields()
+}
+
+class Journal {
+  - subject : string
+  - teacher : string
+  - lessons : vector<LessonComponent*>
+  - strategy : IFormatStrategy*
+  + addLesson(lesson : LessonComponent*)
+  + decorate(index, wrap)
+  + setFormat(strategy)
+  + show() : string
+  + print(out)
+}
+
+interface IFormatStrategy {
+  + getName() : string
+  + format(journal : Journal) : string
+}
+class TextFormat
+class HtmlFormat
+class JsonFormat
+
+LessonComponent <|-- Lesson
+Lesson <|-- Credit
+Lesson <|-- Exam
+LessonComponent <|-- LessonDecorator
+LessonDecorator o-- "1" LessonComponent : wrapped
+LessonDecorator <|-- HomeworkDecorator
+LessonDecorator <|-- RetakeDecorator
+LessonDecorator <|-- OnlineDecorator
+
+Journal *-- "0..*" LessonComponent
+Journal o-- IFormatStrategy
+IFormatStrategy <|.. TextFormat
+IFormatStrategy <|.. HtmlFormat
+IFormatStrategy <|.. JsonFormat
+@enduml

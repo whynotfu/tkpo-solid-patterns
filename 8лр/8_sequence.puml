@@ -1,0 +1,35 @@
+@startuml
+title Вывод экзамена с декораторами: Online(Retake(Exam))
+
+actor Пользователь
+participant "HtmlFormat" as H
+participant "OnlineDecorator" as On
+participant "RetakeDecorator" as Re
+participant "Exam" as Ex
+
+== Создание цепочки ==
+Пользователь -> Ex ** : new Exam(...)
+Пользователь -> Re ** : new RetakeDecorator(exam, дата, 2)
+Пользователь -> On ** : new OnlineDecorator(retake, ссылка)
+
+== Вывод записи ==
+H -> On : getType()
+On -> Re : getType()
+Re -> Ex : getType()
+Ex --> Re : "Экзамен"
+Re --> On : "Экзамен (с пересдачей)"
+On --> H : "[онлайн] Экзамен (с пересдачей)"
+
+H -> On : getFields()
+On -> Re : getFields()
+Re -> Ex : getFields()
+Ex --> Re : дата, тема, класс, форма, балл
+Re --> On : + пересдача, на пересдачу
+On --> H : + ссылка
+H -> H : <p>...</p>
+
+== Удаление ==
+Пользователь -> On : delete
+On -> Re : delete wrapped
+Re -> Ex : delete wrapped
+@enduml

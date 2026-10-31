@@ -1,0 +1,29 @@
+@startuml
+title Смена формата вывода журнала
+
+actor Пользователь
+participant "main (меню)" as M
+participant "Journal" as J
+participant "HtmlFormat" as H
+participant "Lesson / Credit / Exam" as L
+
+Пользователь -> M : 2 - сменить формат, 2 - html
+M -> J : setFormat(&html)
+
+Пользователь -> M : 1 - показать журнал
+M -> J : show()
+J -> H : format(journal)
+H -> J : getSubject(), getTeacher()
+loop для каждого урока
+  H -> J : getLesson(i)
+  J --> H : lesson
+  H -> L : getType()
+  H -> L : getFields()
+  note right : виртуальные методы:\nу Зачета и Экзамена\nсвои дополнительные поля
+  L --> H : поля
+  H -> H : <p>...</p>
+end
+H --> J : html-текст
+J --> M : html-текст
+M --> Пользователь : вывод на экран
+@enduml

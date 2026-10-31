@@ -1,0 +1,31 @@
+@startuml
+title Диаграмма состояний: формат вывода журнала
+
+state "Формат не выбран" as None
+state "Формат text" as Text
+state "Формат html" as Html
+state "Формат json" as Json
+
+[*] --> None : создание журнала
+None --> Text : setFormat(text)
+None --> None : show() / "Формат не выбран"
+
+Text --> Html : setFormat(html)
+Text --> Json : setFormat(json)
+Html --> Text : setFormat(text)
+Html --> Json : setFormat(json)
+Json --> Text : setFormat(text)
+Json --> Html : setFormat(html)
+
+Text --> Text : show() / записи с новой строки
+Html --> Html : show() / записи в <p></p>
+Json --> Json : show() / JSON-объект
+
+Text --> Text : addLesson()
+Html --> Html : addLesson()
+Json --> Json : addLesson()
+
+Text --> [*] : выход из меню
+Html --> [*] : выход из меню
+Json --> [*] : выход из меню
+@enduml

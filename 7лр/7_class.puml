@@ -1,0 +1,72 @@
+@startuml
+title Стратегия: Журнал учителя
+
+class Journal {
+  - subject : string
+  - teacher : string
+  - lessons : vector<Lesson*>
+  - strategy : IFormatStrategy*
+  + Journal()
+  + Journal(subject, teacher)
+  + Journal(other : Journal)
+  + ~Journal()
+  + operator=(other : Journal) : Journal
+  + addLesson(lesson : Lesson*)
+  + input(in, out)
+  + print(out)
+  + setFormat(strategy : IFormatStrategy*)
+  + show() : string
+}
+
+class Lesson {
+  # date : string
+  # topic : string
+  # className : string
+  - {static} liveCount : int
+  + Lesson()
+  + Lesson(date, topic, className)
+  + Lesson(other : Lesson)
+  + ~Lesson()
+  + clone() : Lesson*
+  + getType() : string
+  + getFields() : vector<pair<string,string>>
+  + input(in, out)
+  + print(out)
+}
+
+class Credit {
+  - passedCount : int
+  + Credit()
+  + Credit(date, topic, className, passedCount)
+  + Credit(other : Credit)
+  + ~Credit()
+}
+
+class Exam {
+  - form : string
+  - averageGrade : double
+  + Exam()
+  + Exam(date, topic, className, form, averageGrade)
+  + Exam(other : Exam)
+  + ~Exam()
+}
+
+interface IFormatStrategy {
+  + getName() : string
+  + format(journal : Journal) : string
+}
+
+class TextFormat
+class HtmlFormat
+class JsonFormat
+
+Journal *-- "0..*" Lesson : массив уроков
+Lesson <|-- Credit
+Lesson <|-- Exam
+
+Journal o-- IFormatStrategy : текущий формат
+IFormatStrategy <|.. TextFormat
+IFormatStrategy <|.. HtmlFormat
+IFormatStrategy <|.. JsonFormat
+IFormatStrategy ..> Journal : читает записи
+@enduml
