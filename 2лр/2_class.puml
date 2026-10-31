@@ -1,0 +1,94 @@
+@startuml ClassDiagram
+title Двигатели - диаграмма классов
+
+interface IEngine {
+  + start() : bool
+  + stop()
+  + isRunning() : bool
+  + run(hours) : double
+  + getName() : string
+  + getFuelType() : string
+  + getPower() : double
+}
+
+interface ITorqueSource {
+  + getTorque() : double
+}
+
+interface IThrustSource {
+  + getThrust() : double
+}
+
+interface ISparkIgnition {
+  + getSparkPlugWear() : double
+  + replaceSparkPlugs()
+}
+
+interface ILogger {
+  + log(message)
+}
+class ConsoleLogger
+class SilentLogger
+
+abstract class Engine {
+  - name : string
+  - power : double
+  - running : bool
+  - totalFuel : double
+  + start() : bool
+  + stop()
+  + run(hours) : double
+  # {abstract} getFuelRate() : double
+  # canStart() : bool
+  # onRun(hours)
+}
+
+class PetrolEngine {
+  - maxTorque : double
+  - sparkPlugWear : double
+}
+
+class DieselEngine {
+  - maxTorque : double
+}
+
+class JetEngine {
+  - maxThrust : double
+}
+
+class EngineTestStand {
+  + test(engine : IEngine, hours) : bool
+}
+class Dynamometer {
+  + measure(source : ITorqueSource) : double
+}
+class ThrustMeter {
+  + measure(source : IThrustSource) : double
+}
+class Mechanic {
+  + service(engine : ISparkIgnition)
+}
+
+IEngine <|.. Engine
+Engine <|-- PetrolEngine
+Engine <|-- DieselEngine
+Engine <|-- JetEngine
+
+ITorqueSource <|.. PetrolEngine
+ISparkIgnition <|.. PetrolEngine
+ITorqueSource <|.. DieselEngine
+IThrustSource <|.. JetEngine
+
+ILogger <|.. ConsoleLogger
+ILogger <|.. SilentLogger
+
+EngineTestStand ..> IEngine
+Dynamometer ..> ITorqueSource
+ThrustMeter ..> IThrustSource
+Mechanic ..> ISparkIgnition
+
+EngineTestStand --> ILogger
+Dynamometer --> ILogger
+ThrustMeter --> ILogger
+Mechanic --> ILogger
+@enduml

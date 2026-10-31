@@ -1,0 +1,85 @@
+@startuml ClassDiagram
+title Система Платежи - диаграмма классов
+
+class Account {
+  - number : string
+  - balance : double
+  - closed : bool
+  + deposit(amount) : bool
+  + withdraw(amount) : bool
+  + close()
+}
+
+class CreditCard {
+  - number : string
+  - creditLimit : double
+  - debt : double
+  - blocked : bool
+  + charge(amount) : bool
+  + block()
+}
+
+class Order {
+  - id : int
+  - amount : double
+  - paid : bool
+  + markPaid()
+}
+
+class Client {
+  - name : string
+  + blockCard()
+  + closeAccount()
+}
+
+interface ILogger {
+  + log(message)
+}
+class ConsoleLogger
+class SilentLogger
+
+interface IPaymentMethod {
+  + pay(amount) : bool
+  + getName() : string
+}
+class AccountPayment
+class CreditCardPayment
+
+class PaymentService {
+  + payOrder(order, method) : bool
+  + transfer(from, to, amount) : bool
+}
+
+interface IBlockRule {
+  + isViolated(card) : bool
+  + getReason() : string
+}
+class CreditLimitRule
+
+class Administrator {
+  - name : string
+  + addRule(rule)
+  + checkCard(card) : bool
+}
+
+Client o-- Account
+Client o-- CreditCard
+
+ILogger <|.. ConsoleLogger
+ILogger <|.. SilentLogger
+
+IPaymentMethod <|.. AccountPayment
+IPaymentMethod <|.. CreditCardPayment
+AccountPayment --> Account
+CreditCardPayment --> CreditCard
+
+PaymentService --> ILogger
+PaymentService ..> IPaymentMethod
+PaymentService ..> Order
+PaymentService ..> Account
+
+IBlockRule <|.. CreditLimitRule
+Administrator *-- "0..*" IBlockRule
+Administrator --> ILogger
+Administrator ..> CreditCard
+@enduml

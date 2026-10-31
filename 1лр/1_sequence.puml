@@ -1,0 +1,29 @@
+@startuml SequenceDiagram
+title Оплата заказа картой и блокировка за превышение кредита
+
+actor Клиент
+participant "PaymentService" as PS
+participant "CreditCardPayment" as CCP
+participant "CreditCard" as Card
+participant "Order" as Ord
+actor Администратор as Admin
+participant "CreditLimitRule" as Rule
+participant "ILogger" as Log
+
+Клиент -> PS : payOrder(order, byCard)
+PS -> Ord : isPaid()
+Ord --> PS : false
+PS -> CCP : pay(amount)
+CCP -> Card : charge(amount)
+Card --> CCP : true
+CCP --> PS : true
+PS -> Ord : markPaid()
+PS -> Log : log("Заказ оплачен")
+
+Admin -> Admin : checkCard(card)
+Admin -> Rule : isViolated(card)
+Rule -> Card : getDebt(), getCreditLimit()
+Rule --> Admin : true
+Admin -> Card : block()
+Admin -> Log : log("Карта заблокирована")
+@enduml

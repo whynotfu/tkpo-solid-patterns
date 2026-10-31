@@ -1,0 +1,33 @@
+@startuml SequenceDiagram
+title Испытание двигателя на стенде и обслуживание
+
+actor Пользователь
+participant "EngineTestStand" as Stand
+participant "PetrolEngine" as Engine
+participant "Dynamometer" as Dyno
+participant "Mechanic" as Mech
+participant "ILogger" as Log
+
+Пользователь -> Stand : test(engine, hours)
+Stand -> Engine : start()
+Engine -> Engine : canStart()
+Engine --> Stand : true
+Stand -> Engine : run(hours)
+Engine -> Engine : getFuelRate()
+Engine -> Engine : onRun(hours)
+Engine --> Stand : fuel
+Stand -> Engine : stop()
+Stand -> Log : log("расход топлива")
+
+Пользователь -> Engine : start()
+Пользователь -> Dyno : measure(engine)
+Dyno -> Engine : getTorque()
+Engine --> Dyno : torque
+Dyno -> Log : log("крутящий момент")
+
+Пользователь -> Mech : service(engine)
+Mech -> Engine : getSparkPlugWear()
+Engine --> Mech : wear
+Mech -> Engine : replaceSparkPlugs()
+Mech -> Log : log("свечи заменены")
+@enduml
