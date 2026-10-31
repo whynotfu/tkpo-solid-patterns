@@ -1,0 +1,61 @@
+@startuml
+title Фасад: ежедневная норма килокалорий
+
+class Client <<4_Practice.cpp>>
+
+class CalorieFacade {
+  - validator : PersonValidator
+  - metabolism : BasalMetabolism
+  - activity : ActivityFactor
+  - idealWeightCalc : IdealWeight
+  - bodyTypes : map<BodyKind, BodyType>
+  + dailyNorm(p : PersonData, kind : BodyKind) : double
+  + idealWeight(p : PersonData, kind : BodyKind) : double
+  + report(p : PersonData, kind : BodyKind) : string
+  - recommendation(...) : string
+}
+
+class PersonData <<struct>> {
+  + height : double
+  + weight : double
+  + age : int
+  + sex : Sex
+  + activity : Activity
+}
+
+package "Подсистема" {
+  class PersonValidator {
+    + validate(p : PersonData)
+  }
+  class BasalMetabolism {
+    + calculate(p : PersonData) : double
+  }
+  class ActivityFactor {
+    + getFactor(a : Activity) : double
+    + getName(a : Activity) : string
+  }
+  class IdealWeight {
+    + calculate(height, body : BodyType) : double
+  }
+  abstract class BodyType {
+    + {abstract} getName() : string
+    + {abstract} getCalorieFactor() : double
+    + {abstract} getWeightFactor() : double
+  }
+  class Asthenic
+  class Normosthenic
+  class Hypersthenic
+}
+
+Client ..> CalorieFacade
+Client ..> PersonData
+CalorieFacade *-- PersonValidator
+CalorieFacade *-- BasalMetabolism
+CalorieFacade *-- ActivityFactor
+CalorieFacade *-- IdealWeight
+CalorieFacade *-- "3" BodyType
+BodyType <|-- Asthenic
+BodyType <|-- Normosthenic
+BodyType <|-- Hypersthenic
+IdealWeight ..> BodyType
+@enduml

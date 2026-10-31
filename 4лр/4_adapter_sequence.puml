@@ -1,0 +1,27 @@
+@startuml
+title Адаптер: вызовы клиента
+
+participant "Client" as C
+participant "CylinderAdapter\n(ICylinder)" as A
+participant "GasCylinder" as G
+
+C -> A : calculateDp(300, 50)
+A -> G : getPressure(350)
+G -> G : amountOfMatter()
+G --> A : p1
+A -> G : getPressure(300)
+G --> A : p0
+A --> C : p1 - p0
+
+C -> A : modifMass(0.5)
+A -> G : getMass()
+G --> A : m
+A -> G : setMass(m + 0.5)
+
+C -> A : getData()
+A -> G : toString()
+G --> A : строка
+A -> G : amountOfMatter()
+G --> A : ν
+A --> C : данные баллона
+@enduml

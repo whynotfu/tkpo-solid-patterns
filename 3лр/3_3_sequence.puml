@@ -1,0 +1,19 @@
+@startuml
+title Вариант 3. Выбор случайной фигуры
+
+actor Игра
+participant "FigureGenerator" as Gen
+participant "FigureCreator\n(PlusFigureCreator)" as Creator
+participant "PlusFigure" as Fig
+
+Игра -> Gen : next()
+Gen -> Gen : randomInt(1, 100) <= superChance?
+note right : да - берем набор супер-фигур,\nнет - набор обычных
+Gen -> Gen : randomInt(0, size - 1)
+Gen -> Creator : createFigure()
+Creator -> Fig ** : new PlusFigure()
+Creator --> Gen : figure
+Gen --> Игра : figure
+Игра -> Fig : draw()
+Fig --> Игра : рисунок
+@enduml

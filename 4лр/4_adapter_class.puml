@@ -1,0 +1,36 @@
+@startuml
+title Адаптер объектов: Баллон с газом
+
+class Client <<4_Practice.cpp>> {
+  + useCylinder(cylinder : ICylinder)
+}
+
+interface ICylinder {
+  + calculateDp(T0 : int, dT : int) : double
+  + modifMass(dm : double)
+  + getData() : string
+}
+
+class CylinderAdapter {
+  - cylinder : GasCylinder&
+  + calculateDp(T0 : int, dT : int) : double
+  + modifMass(dm : double)
+  + getData() : string
+}
+
+class GasCylinder {
+  - volume : double
+  - mass : double
+  - molar : double
+  + getVolume() / setVolume()
+  + getMass() / setMass()
+  + getMolar() / setMolar()
+  + getPressure(T : int) : double
+  + amountOfMatter() : double
+  + toString() : string
+}
+
+Client ..> ICylinder
+ICylinder <|.. CylinderAdapter
+CylinderAdapter o-- GasCylinder : адаптирует
+@enduml

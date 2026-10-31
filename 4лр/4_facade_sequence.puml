@@ -1,0 +1,21 @@
+@startuml
+title Фасад: расчёт суточной нормы
+
+participant "Client" as C
+participant "CalorieFacade" as F
+participant "PersonValidator" as V
+participant "BasalMetabolism" as M
+participant "ActivityFactor" as A
+participant "BodyType\n(Asthenic)" as B
+
+C -> F : dailyNorm(person, Asthenic)
+F -> V : validate(person)
+F -> M : calculate(person)
+M --> F : основной обмен
+F -> A : getFactor(activity)
+A --> F : коэффициент активности
+F -> B : getCalorieFactor()
+B --> F : коэффициент телосложения
+F -> F : перемножить и округлить
+F --> C : норма, ккал
+@enduml

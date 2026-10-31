@@ -1,0 +1,26 @@
+@startuml
+title Вариант 1. Конвертация статьи в XML
+
+actor Пользователь
+participant "ArticleDirector" as Dir
+participant "HashCalculator" as Hash
+participant "XmlArticleBuilder" as B
+participant "FileStorage" as FS
+
+Пользователь -> FS : read("article.txt")
+FS --> Пользователь : txt
+Пользователь -> Dir : construct(txt)
+Dir -> Dir : разбить на строки
+Dir -> Hash : calculate(text)
+Hash --> Dir : hash
+Dir -> Dir : сравнить с последней строкой
+Dir -> B : reset()
+Dir -> B : buildTitle(title)
+Dir -> B : buildAuthors(authors)
+Dir -> B : buildText(lines)
+Dir -> B : buildHash(hash, valid)
+Dir --> Пользователь : true
+Пользователь -> B : getResult()
+B --> Пользователь : xml
+Пользователь -> FS : write("article.xml", xml)
+@enduml

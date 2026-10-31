@@ -1,0 +1,70 @@
+@startuml
+title Вариант 3. Фабричный метод: фигуры тетриса
+
+class Figure {
+  - name : string
+  - cells : vector<Cell>
+  + getCellCount() : int
+  + isSuper() : bool
+  + draw() : string
+}
+
+class IFigure
+class OFigure
+class TFigure
+class SFigure
+class ZFigure
+class LFigure
+class JFigure
+class PlusFigure
+class LongIFigure
+class UFigure
+
+abstract class FigureCreator {
+  + {abstract} createFigure() : Figure
+}
+
+class IFigureCreator
+class OFigureCreator
+class TFigureCreator
+class SFigureCreator
+class ZFigureCreator
+class LFigureCreator
+class JFigureCreator
+class PlusFigureCreator
+class LongIFigureCreator
+class UFigureCreator
+
+class FigureGenerator {
+  - superChance : int
+  - random : mt19937
+  + addNormal(creator)
+  + addSuper(creator)
+  + next() : Figure
+}
+
+Figure <|-- IFigure
+Figure <|-- OFigure
+Figure <|-- TFigure
+Figure <|-- SFigure
+Figure <|-- ZFigure
+Figure <|-- LFigure
+Figure <|-- JFigure
+Figure <|-- PlusFigure
+Figure <|-- LongIFigure
+Figure <|-- UFigure
+
+FigureCreator <|-- IFigureCreator
+FigureCreator <|-- OFigureCreator
+FigureCreator <|-- TFigureCreator
+FigureCreator <|-- SFigureCreator
+FigureCreator <|-- ZFigureCreator
+FigureCreator <|-- LFigureCreator
+FigureCreator <|-- JFigureCreator
+FigureCreator <|-- PlusFigureCreator
+FigureCreator <|-- LongIFigureCreator
+FigureCreator <|-- UFigureCreator
+
+FigureCreator ..> Figure : создает
+FigureGenerator *-- "1..*" FigureCreator
+@enduml

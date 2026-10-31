@@ -1,0 +1,83 @@
+@startuml
+title Вариант 2. Абстрактная фабрика: Кинопрокат
+
+interface ILanguageFactory {
+  + getCode() : string
+  + getName() : string
+  + createAudioTrack() : IAudioTrack
+  + createSubtitles() : ISubtitles
+}
+
+class RussianFactory
+class EnglishFactory
+class FrenchFactory
+
+interface IAudioTrack {
+  + getLanguage() : string
+  + play() : string
+}
+
+interface ISubtitles {
+  + getLanguage() : string
+  + show() : string
+}
+
+class RussianAudioTrack
+class EnglishAudioTrack
+class FrenchAudioTrack
+class RussianSubtitles
+class EnglishSubtitles
+class FrenchSubtitles
+
+class Film {
+  - title : string
+  - year : int
+  - minutes : int
+}
+
+class FilmCopy {
+  + setLanguage(factory)
+  + getAudioLanguage() : string
+  + getSubtitlesLanguage() : string
+  + play() : string
+}
+
+class LanguageRegistry {
+  + add(factory)
+  + find(code) : ILanguageFactory
+}
+
+class MovieRental {
+  + addFilm(film)
+  + order(title, code) : FilmCopy
+  + changeLanguage(copy, code) : bool
+}
+
+ILanguageFactory <|.. RussianFactory
+ILanguageFactory <|.. EnglishFactory
+ILanguageFactory <|.. FrenchFactory
+
+IAudioTrack <|.. RussianAudioTrack
+IAudioTrack <|.. EnglishAudioTrack
+IAudioTrack <|.. FrenchAudioTrack
+ISubtitles <|.. RussianSubtitles
+ISubtitles <|.. EnglishSubtitles
+ISubtitles <|.. FrenchSubtitles
+
+RussianFactory ..> RussianAudioTrack
+RussianFactory ..> RussianSubtitles
+EnglishFactory ..> EnglishAudioTrack
+EnglishFactory ..> EnglishSubtitles
+FrenchFactory ..> FrenchAudioTrack
+FrenchFactory ..> FrenchSubtitles
+
+FilmCopy *-- Film
+FilmCopy *-- IAudioTrack
+FilmCopy *-- ISubtitles
+FilmCopy ..> ILanguageFactory
+
+LanguageRegistry *-- "1..*" ILanguageFactory
+MovieRental o-- LanguageRegistry
+MovieRental *-- "0..*" Film
+MovieRental ..> FilmCopy
+@enduml

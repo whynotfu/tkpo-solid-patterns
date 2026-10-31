@@ -1,0 +1,30 @@
+@startuml
+title Вариант 2. Заказ фильма и смена языка
+
+actor Пользователь
+participant "MovieRental" as Rental
+participant "LanguageRegistry" as Reg
+participant "FilmCopy" as Copy
+participant "EnglishFactory" as En
+participant "RussianFactory" as Ru
+
+Пользователь -> Rental : order("Интерстеллар", "en")
+Rental -> Reg : find("en")
+Reg --> Rental : EnglishFactory
+Rental -> Copy ** : new FilmCopy(film, factory)
+Copy -> En : createAudioTrack()
+En --> Copy : EnglishAudioTrack
+Copy -> En : createSubtitles()
+En --> Copy : EnglishSubtitles
+Rental --> Пользователь : copy
+
+Пользователь -> Rental : changeLanguage(copy, "ru")
+Rental -> Reg : find("ru")
+Reg --> Rental : RussianFactory
+Rental -> Copy : setLanguage(factory)
+Copy -> Ru : createAudioTrack()
+Ru --> Copy : RussianAudioTrack
+Copy -> Ru : createSubtitles()
+Ru --> Copy : RussianSubtitles
+Rental --> Пользователь : true
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+title Вариант 1. Строитель: конвертация TXT в XML
+
+interface IArticleBuilder {
+  + reset()
+  + buildTitle(title)
+  + buildAuthors(authors)
+  + buildText(lines)
+  + buildHash(hash, valid)
+  + getResult() : string
+}
+
+class XmlArticleBuilder {
+  - body : string
+  - escape(s) : string
+}
+
+class SummaryBuilder {
+  - result : string
+}
+
+class ArticleDirector {
+  - hashValid : bool
+  + construct(txt) : bool
+  + isHashValid() : bool
+}
+
+class HashCalculator {
+  + {static} calculate(text) : string
+}
+
+class FileStorage {
+  + {static} read(path, content) : bool
+  + {static} write(path, content) : bool
+}
+
+IArticleBuilder <|.. XmlArticleBuilder
+IArticleBuilder <|.. SummaryBuilder
+ArticleDirector o-- IArticleBuilder
+ArticleDirector ..> HashCalculator
+@enduml
